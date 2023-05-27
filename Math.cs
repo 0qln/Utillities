@@ -4,7 +4,7 @@ namespace Utillities {
     /// <summary>
     /// Provides a wide range of methods and functions
     /// </summary>
-    public static class Math {
+    public static class ExtendedMath {
         /// <summary>
         /// 
         /// </summary>
