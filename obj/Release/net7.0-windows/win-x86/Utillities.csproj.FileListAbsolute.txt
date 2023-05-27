@@ -1,0 +1,16 @@
+D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\win-x86\Utillities.deps.json
+D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\win-x86\Utillities.dll
+D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\win-x86\Utillities.pdb
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.csproj.AssemblyReference.cache
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities_MarkupCompile.cache
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities_MarkupCompile.lref
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Themes\Generic.baml
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.g.resources
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.GeneratedMSBuildEditorConfig.editorconfig
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.AssemblyInfoInputs.cache
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.AssemblyInfo.cs
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.csproj.CoreCompileInputs.cache
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.dll
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\refint\Utillities.dll
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\Utillities.pdb
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x86\ref\Utillities.dll
