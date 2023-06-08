@@ -18,7 +18,7 @@ namespace Utillities.Wpf {
         /// <param name="window">The window to be wrapped</param>
         /// <returns>If the old content of the Window was a Panel, it will be returned as is. 
         /// If not, a new Canvas will be created and the old Content of the window will be added to the newly created for further usage of the window.</returns>
-        public static (Panel, Border) Wrap(Window window) {
+        public static (Panel, Border, RectangleGeometry) Wrap(Window window) {
             Panel newPanel;
             if (window.Content is Panel)
                 newPanel = (window.Content as Panel)!;
@@ -30,8 +30,8 @@ namespace Utillities.Wpf {
 
             var rectangleGeometry = new RectangleGeometry {
                 Rect = new Rect(0, 0, window.Width, window.Width),
-                RadiusX = 25,
-                RadiusY = 25,
+                RadiusX = 10,
+                RadiusY = 10,
             };
             newPanel.Clip = rectangleGeometry;
 
@@ -46,7 +46,7 @@ namespace Utillities.Wpf {
             };
 
             window.Content = border;
-            return (newPanel, border);
+            return (newPanel, border, rectangleGeometry);
         }
 
     }

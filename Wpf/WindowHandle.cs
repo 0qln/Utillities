@@ -26,6 +26,7 @@ namespace Utillities.Wpf
         private WindowChrome windowChrome = new WindowChrome();
         private Window window;
         private Panel parentContainer;
+        private RectangleGeometry rectangleGeometry;
         private Border windowBorder;
         private ApplicationButtonCollection applicationButtons;
         private static double clientButtonHeight = 20;
@@ -67,6 +68,8 @@ namespace Utillities.Wpf
         public WindowHandle(Window window) {
             this.window = window;
             window.WindowStyle = WindowStyle.None;
+            window.AllowsTransparency = true;
+            window.Background = Brushes.Transparent;
 
             // var
             WindowChrome.SetWindowChrome(window, windowChrome);
@@ -105,6 +108,7 @@ namespace Utillities.Wpf
             var wrap = WindowWrapper.Wrap(window);
             parentContainer = wrap.Item1;
             windowBorder = wrap.Item2;
+            rectangleGeometry = wrap.Item3;
             parentContainer.Children.Add(FrameworkElement);
         }
 
@@ -830,8 +834,8 @@ namespace Utillities.Wpf
                     window.WindowState = WindowState.Normal;
                     window.Left = 0;
                     window.Top = 0;
-                    (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusX = 0;
-                    (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusY = 0;
+                    windowHandle.rectangleGeometry.RadiusX = 0;
+                    windowHandle.rectangleGeometry.RadiusY = 0;
                     window.Width = SystemParameters.PrimaryScreenWidth;
                     window.Height = SystemParameters.PrimaryScreenHeight;
 
@@ -844,8 +848,8 @@ namespace Utillities.Wpf
                     window.WindowState = prevWindowState!.Value.windowState;
                     window.Left = prevWindowState.Value.Left;
                     window.Top = prevWindowState.Value.Top;
-                    (windowHandle.parentContainer.Clip as RectangleGeometry).RadiusX = prevWindowState.Value.CornerRadius;
-                    (windowHandle.parentContainer.Clip as RectangleGeometry).RadiusY = prevWindowState.Value.CornerRadius;
+                    (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusX = prevWindowState.Value.CornerRadius;
+                    (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusY = prevWindowState.Value.CornerRadius;
                     window.Width = prevWindowState.Value.Width;
                     window.Height = prevWindowState.Value.Height;
 
