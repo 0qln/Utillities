@@ -25,17 +25,18 @@ namespace Utillities.Wpf
     public class WindowHandle {
         private WindowChrome windowChrome = new WindowChrome();
         private Window window;
+        private Panel parentContainer;
+        private Border windowBorder;
         private ApplicationButtonCollection applicationButtons;
         private static double clientButtonHeight = 20;
         private double height = 30;
         private Image icon = new Image();
-        private List<(Button, DropDownMenu)> clientButtons = new List<(Button, DropDownMenu)>();
+        private List<(Button, DropDownMenu)> clientButtons = new();
         private bool isUsingClientButtons = false;
-        private StackPanel clientButtonStackPanel = new StackPanel();
-        private Grid mainGrid = new Grid();
+        private StackPanel clientButtonStackPanel = new();
+        private Grid mainGrid = new();
         private static Brush colorWhenButtonHover = Helper.StringToSolidColorBrush("#3d3d3d");
         private Brush bgColor = Helper.StringToSolidColorBrush("#1f1f1f");
-        private Canvas? parentCanvas;
 
         /// <summary>
         /// Gets the hight of this WindowHandle.
@@ -62,6 +63,7 @@ namespace Utillities.Wpf
         /// Initializes a new instance of the WindowHandle class.
         /// </summary>
         /// <param name="window">The window associated with the WindowHandle.</param>
+        /// <param name="cornerRadius">The corner radius of the TopLeft and TopRight corners of the Window. If the window has no rounded corners, just pass in 0.</param>
         public WindowHandle(Window window) {
             this.window = window;
             window.WindowStyle = WindowStyle.None;
@@ -80,7 +82,7 @@ namespace Utillities.Wpf
             mainGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
             mainGrid.Width = window.Width;
             mainGrid.Height = height;
-
+            
             window.SizeChanged += (s, e) => {
                 mainGrid.Width = window.ActualWidth;
             };
@@ -99,16 +101,11 @@ namespace Utillities.Wpf
             // Set up Client Button Stack Panel
             clientButtonStackPanel.Background = Brushes.Transparent;
             clientButtonStackPanel.Orientation = Orientation.Horizontal;
-        }
-        /// <summary>
-        /// Sets the parent Canvas for the WindowHandle.
-        /// </summary>
-        /// <param name="parentCanvas">The parent Canvas to which the WindowHandle will be added.</param>
-        /// <returns>The WindowHandle instance.</returns>
-        public WindowHandle SetParentWindow(Canvas parentCanvas) {
-            parentCanvas.Children.Add(mainGrid);
-            this.parentCanvas = parentCanvas;
-            return this;
+
+            var wrap = WindowWrapper.Wrap(window);
+            parentContainer = wrap.Item1;
+            windowBorder = wrap.Item2;
+            parentContainer.Children.Add(FrameworkElement);
         }
 
         /// <summary>
@@ -173,7 +170,7 @@ namespace Utillities.Wpf
                 Style = ClientButtonStyle()
             };
             Helper.SetWindowChromActive(newClientButton);
-            parentCanvas?.Children.Add(dropDownMenu.UIElement);
+            parentContainer?.Children.Add(dropDownMenu.UIElement);
             clientButtons.Add((newClientButton, dropDownMenu));
             clientButtonStackPanel.Children.Add(newClientButton);
 
@@ -801,6 +798,9 @@ namespace Utillities.Wpf
                 fullscreenButton.Click += (s, e) => action();
             }
 
+            public delegate void EventHandler();
+            public event EventHandler? OnFullscreen;
+
             private void Shutdown(object sender, RoutedEventArgs e) {
                 window.Close();
             }
@@ -824,20 +824,28 @@ namespace Utillities.Wpf
             }
             private void Fullscreen(object sender, RoutedEventArgs e) {
                 if (!isFullscreen) {
-                    prevWindowState = new _WindowState(window.WindowState, window.Top, window.Left, window.Width, window.Height);
+                    prevWindowState = new _WindowState(window.WindowState, window.Top, window.Left, window.Width, window.Height, (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusX);
 
                     isFullscreen = true;
                     window.WindowState = WindowState.Normal;
                     window.Left = 0;
                     window.Top = 0;
+                    (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusX = 0;
+                    (windowHandle.parentContainer.Clip as RectangleGeometry)!.RadiusY = 0;
                     window.Width = SystemParameters.PrimaryScreenWidth;
                     window.Height = SystemParameters.PrimaryScreenHeight;
+
+                    if (OnFullscreen != null) {
+                        OnFullscreen?.Invoke();
+                    }
                 }
                 else {
                     isFullscreen = false;
                     window.WindowState = prevWindowState!.Value.windowState;
                     window.Left = prevWindowState.Value.Left;
                     window.Top = prevWindowState.Value.Top;
+                    (windowHandle.parentContainer.Clip as RectangleGeometry).RadiusX = prevWindowState.Value.CornerRadius;
+                    (windowHandle.parentContainer.Clip as RectangleGeometry).RadiusY = prevWindowState.Value.CornerRadius;
                     window.Width = prevWindowState.Value.Width;
                     window.Height = prevWindowState.Value.Height;
 
@@ -900,17 +908,20 @@ namespace Utillities.Wpf
                 public double Left;
                 public double Width;
                 public double Height;
+                public double CornerRadius;
 
                 public _WindowState(WindowState windowState,
                                     double Top,
                                     double Left,
                                     double Width,
-                                    double Height) {
+                                    double Height,
+                                    double CornerRadius) {
                     this.windowState = windowState;
                     this.Top = Top;
                     this.Left = Left;
                     this.Width = Width;
                     this.Height = Height;
+                    this.CornerRadius = CornerRadius;
                 }
             }
         }
