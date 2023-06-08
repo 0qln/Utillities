@@ -16,6 +16,32 @@ namespace Utillities.Wpf
     /// </summary>
     public static class Helper {
         /// <summary>
+        /// Converts a color string representation into a WPF Brush object.
+        /// The color string should be in the format: transparency, red, green, blue.
+        /// Transparency and color values should be represented as two-digit hexadecimal numbers.
+        /// </summary>
+        /// <param name="colorString">The color string to convert.</param>
+        /// <returns>A SolidColorBrush representing the color.</returns>
+        /// <exception cref="ArgumentException">Thrown when the color string is invalid or has an incorrect format.</exception>
+        public static Brush StringToBrush(string colorString) {
+            if (colorString[0] == '#') colorString = colorString.Substring(1, 8);
+
+            if (colorString.Length != 8) {
+                throw new ArgumentException("Invalid color string. Expected format: transparency, r, g, b");
+            }
+
+            // Extract transparency, red, green, and blue values from the color string
+            byte transparency = byte.Parse(colorString.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            byte red = byte.Parse(colorString.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            byte green = byte.Parse(colorString.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            byte blue = byte.Parse(colorString.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+
+            // Create and return a SolidColorBrush using the extracted color values
+            return new SolidColorBrush(Color.FromArgb(transparency, red, green, blue));
+        }
+
+
+        /// <summary>
         /// Updates the hover color of a button.
         /// </summary>
         /// <param name="button">The button to update.</param>

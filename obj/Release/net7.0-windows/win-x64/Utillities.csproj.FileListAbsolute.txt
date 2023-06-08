@@ -14,3 +14,5 @@ D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x64\Utillit
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x64\refint\Utillities.dll
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x64\Utillities.pdb
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x64\ref\Utillities.dll
+D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\win-x64\Utillities.xml
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\win-x64\Utillities.xml

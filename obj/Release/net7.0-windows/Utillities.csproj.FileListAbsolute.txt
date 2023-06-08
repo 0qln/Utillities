@@ -14,3 +14,5 @@ D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.Asse
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.AssemblyInfo.cs
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.csproj.CoreCompileInputs.cache
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\ref\Utillities.dll
+D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\Utillities.xml
+D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.xml

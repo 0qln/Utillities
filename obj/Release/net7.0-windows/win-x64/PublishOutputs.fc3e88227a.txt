@@ -1,3 +1,4 @@
 D:\Programmmieren\Projects\Utillities\Release\Utillities.dll
 D:\Programmmieren\Projects\Utillities\Release\Utillities.deps.json
 D:\Programmmieren\Projects\Utillities\Release\Utillities.pdb
+D:\Programmmieren\Projects\Utillities\Release\Utillities.xml

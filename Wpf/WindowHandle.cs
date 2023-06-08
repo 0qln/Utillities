@@ -25,14 +25,14 @@ namespace Utillities.Wpf
         private WindowChrome windowChrome = new WindowChrome();
         private Window window;
         private ApplicationButtonCollection applicationButtons;
-        private double clientButtonHeight = 20;
+        private static double clientButtonHeight = 20;
         private double height = 30;
         private Image icon = new Image();
         private List<(Button, DropDownMenu)> clientButtons = new List<(Button, DropDownMenu)>();
         private bool isUsingClientButtons = false;
         private StackPanel clientButtonStackPanel = new StackPanel();
         private Grid mainGrid = new Grid();
-        private Brush colorWhenButtonHover = Helper.StringToSolidColorBrush("#3d3d3d");
+        private static Brush colorWhenButtonHover = Helper.StringToSolidColorBrush("#3d3d3d");
         private Brush bgColor = Helper.StringToSolidColorBrush("#1f1f1f");
         private Canvas? parentCanvas;
 
@@ -180,6 +180,10 @@ namespace Utillities.Wpf
             return this;
         }
 
+        public void AddElement(FrameworkElement element) {
+            clientButtonStackPanel.Children.Add(element);
+        }
+
         // Client Button Init
         private void ActivateClientButton((Button, DropDownMenu) button) {
             button.Item1.Loaded += (object sender, RoutedEventArgs e) => button.Item2.UpdateOptionLayout();
@@ -294,7 +298,7 @@ namespace Utillities.Wpf
         /// Gets the style for the client buttons in the WindowHandle.
         /// </summary>
         /// <returns>The style for the client buttons.</returns>
-        public Style ClientButtonStyle() {
+        public static Style ClientButtonStyle() {
             Style clientButtonsStyle = new Style(typeof(Button));
 
             clientButtonsStyle.Setters.Add(new Setter(Button.MarginProperty, new Thickness(10, 0, 0, 0)));
@@ -441,8 +445,8 @@ namespace Utillities.Wpf
         public class ApplicationButtonCollection {
             private Window window;
 
-            private double height = 30;
-            private double width = 40;
+            private static double height = 30;
+            private static double width = 40;
 
             /// <summary> Gets or sets the height of the application buttons. </summary>
             public double Height {
@@ -521,8 +525,8 @@ namespace Utillities.Wpf
             private StackPanel stackPanel = new();
 
             private Brush colorWhenButtonHover = Helper.StringToSolidColorBrush("#3d3d3d");
-            private Brush color = Brushes.Transparent;
-            private Brush symbolColor = Brushes.White;
+            private static Brush color = Brushes.Transparent;
+            private static Brush symbolColor = Brushes.White;
             /// <summary>Gets or sets the color of the application buttons when hovered.</summary>
             public Brush ColorWhenButtonHover {
                 get => colorWhenButtonHover;
@@ -629,7 +633,7 @@ namespace Utillities.Wpf
             /// Creates the button style for the application buttons.
             /// </summary>
             /// <returns>The button style.</returns>
-            public Style ButtonStyle() {
+            public static Style ButtonStyle() {
                 // Create a new style for the button
                 Style style = new Style(typeof(Button));
                 style.Setters.Add(new Setter(Button.BackgroundProperty, color));
@@ -637,8 +641,8 @@ namespace Utillities.Wpf
                 style.Setters.Add(new Setter(Button.BorderBrushProperty, Brushes.Transparent));
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Right));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Top));
-                style.Setters.Add(new Setter(Button.WidthProperty, Width));
-                style.Setters.Add(new Setter(Button.HeightProperty, Height));
+                style.Setters.Add(new Setter(Button.WidthProperty, width));
+                style.Setters.Add(new Setter(Button.HeightProperty, height));
 
                 // Set the control template of the button
                 ControlTemplate template = new ControlTemplate(typeof(Button));
