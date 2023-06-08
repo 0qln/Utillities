@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 
-1204305769
+2-798192812
 
-9-841513536
+17-1053819648
 1981827736222
-Themes\Generic.xaml;
+Themes\Generic.xaml;Wpf\WpfControls\Themes\Generic.xaml;
 
-False
+True
 

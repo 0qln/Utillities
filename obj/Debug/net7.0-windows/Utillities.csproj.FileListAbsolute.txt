@@ -1,0 +1,4 @@
+D:\Programmmieren\Projects\Utillities\obj\Debug\net7.0-windows\Utillities.csproj.AssemblyReference.cache
+D:\Programmmieren\Projects\Utillities\obj\Debug\net7.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Programmmieren\Projects\Utillities\obj\Debug\net7.0-windows\Utillities_MarkupCompile.cache
+D:\Programmmieren\Projects\Utillities\obj\Debug\net7.0-windows\Utillities_MarkupCompile.lref
