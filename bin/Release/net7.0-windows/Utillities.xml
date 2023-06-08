@@ -550,17 +550,14 @@
             Represents a collection of application buttons within the WindowHandle.
             </summary>
         </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.IsFullscreen">
+            <summary>Gets the fullscreen state of the window.</summary>
+        </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Height">
-            <summary> Gets or sets the height of the application buttons. </summary>
+            <summary>Gets or sets the height of the application buttons.</summary>
         </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.Width">
             <summary>Gets or sets the width of the application buttons.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImageSource">
-            <summary>Gets or sets the image source for the settings button.</summary>
-        </member>
-        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImagePadding">
-            <summary>Gets or sets the padding for the settings button image.</summary>
         </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ExitButton">
             <summary>Gets the exit button.</summary>
@@ -571,8 +568,26 @@
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.MaximizeButton">
             <summary>Gets the maximize button.</summary>
         </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButton">
+            <summary>Gets the settings button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImageSource">
+            <summary>Gets or sets the image source for the settings button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.SettingsButtonImagePadding">
+            <summary>Gets or sets the padding for the settings button image.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButton">
+            <summary>Gets the fullscreen button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButtonImageSource">
+            <summary>Gets or sets the image source for the fullscreen button.</summary>
+        </member>
+        <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FullscreenButtonImagePadding">
+            <summary>Gets or sets the padding for the settings button image.</summary>
+        </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.FrameworkElement">
-            <summary>Gets the framework element containing the application buttons.</summary>
+            <summary>Gets the framework element which contains the application buttons.</summary>
         </member>
         <member name="P:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ColorWhenButtonHover">
             <summary>Gets or sets the color of the application buttons when hovered.</summary>
@@ -593,6 +608,11 @@
         <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddSettingsButton">
             <summary>
             Adds the settings button to the collection.
+            </summary>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.AddFullcreenButton">
+            <summary>
+            Adds the fullscreen button to the collection.
             </summary>
         </member>
         <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.ButtonStyle">
@@ -630,14 +650,20 @@
             </summary>
             <param name="action">The custom action to be executed on settings button click.</param>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateSize">
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.OverrideFullscreen(System.Action)">
             <summary>
-            
+            Overrides the default fullscreen button behavior with a custom action.
+            </summary>
+            <param name="action"></param>
+        </member>
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateButtonSize">
+            <summary>
+            Forces the Sizes of the buttons to update.
             </summary>
         </member>
-        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateColors">
+        <member name="M:Utillities.Wpf.WindowHandle.ApplicationButtonCollection.UpdateButtonColors">
             <summary>
-            
+            Forces the colors of the buttons to update.
             </summary>
         </member>
     </members>

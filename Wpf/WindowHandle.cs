@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -445,11 +446,20 @@ namespace Utillities.Wpf
         /// </summary>
         public class ApplicationButtonCollection {
             private Window window;
+            private WindowHandle windowHandle;
 
+            private const string ARROW_TOPLEFT = "🡬";
+            private const string ARROW_TOPRIGHT = "🡭";
+            private const string ARROW_BOTTOMLEFT = "🡯";
+            private const string ARROW_BOTTOMRIGHT = "🡮";
+            private bool isFullscreen = false;
+            private _WindowState? prevWindowState;
             private static double height = 30;
             private static double width = 40;
+            /// <summary>Gets the fullscreen state of the window.</summary>
+            public bool IsFullscreen => isFullscreen;
 
-            /// <summary> Gets or sets the height of the application buttons. </summary>
+            /// <summary>Gets or sets the height of the application buttons.</summary>
             public double Height {
                 get { return height; }
                 set {
@@ -464,6 +474,7 @@ namespace Utillities.Wpf
                     }
                 }
             }
+
             /// <summary>Gets or sets the width of the application buttons.</summary>
             public double Width {
                 get { return width; }
@@ -478,6 +489,25 @@ namespace Utillities.Wpf
                     }
                 }
             }
+
+
+            private StackPanel stackPanel = new();
+            private Button? fullscreenButton;
+            private Button? settingsButton;
+            private Button exitButton = new();
+            private Button minimizeButton = new();
+            private Button maximizeButton = new();
+            /// <summary>Gets the exit button.</summary>
+            public Button ExitButton => exitButton;
+
+            /// <summary>Gets the minimize button.</summary>
+            public Button MinimizeButton => minimizeButton;
+
+            /// <summary>Gets the maximize button.</summary>
+            public Button MaximizeButton => maximizeButton;
+
+            /// <summary>Gets the settings button.</summary>
+            public Button? SettingsButton => settingsButton;
             /// <summary>Gets or sets the image source for the settings button.</summary>
             public string? SettingsButtonImageSource {
                 get {
@@ -507,54 +537,72 @@ namespace Utillities.Wpf
                 }
             }
 
+            /// <summary>Gets the fullscreen button.</summary>
+            public Button? FullscreenButton => fullscreenButton;
+            /// <summary>Gets or sets the image source for the fullscreen button.</summary>
+            public string? FullscreenButtonImageSource {
+                get {
+                    if (fullscreenButton == null) return null;
+                    if ((fullscreenButton.Content as Border)!.Child == null) return null;
 
-            private Button settingsButton = new();
-            private Button exitButton = new();
-            private Button minimizeButton = new();
-            private Button maximizeButton = new();
-            /// <summary>Gets the exit button.</summary>
-            public Button ExitButton => exitButton;
+                    return ((fullscreenButton.Content as Border)!.Child as System.Windows.Controls.Image)!.Source.ToString();
+                }
+                set {
+                    if (fullscreenButton == null) return;
 
-            /// <summary>Gets the minimize button.</summary>
-            public Button MinimizeButton => minimizeButton;
+                    var imageContent = ((fullscreenButton.Content as Border)!.Child as System.Windows.Controls.Image)!;
+                    imageContent.Source = new BitmapImage(new Uri(value!));
+                }
+            }
+            /// <summary>Gets or sets the padding for the settings button image.</summary>
+            public Thickness FullscreenButtonImagePadding {
+                get {
+                    if (fullscreenButton == null) return new Thickness();
 
-            /// <summary>Gets the maximize button.</summary>
-            public Button MaximizeButton => maximizeButton;
+                    return (fullscreenButton.Content as Border)!.Padding;
+                }
+                set {
+                    if (fullscreenButton == null) return;
 
-            /// <summary>Gets the framework element containing the application buttons.</summary>
+                    (fullscreenButton.Content as Border)!.Padding = value;
+                }
+            }
+
+            /// <summary>Gets the framework element which contains the application buttons.</summary>
             public FrameworkElement FrameworkElement => stackPanel;
-            private StackPanel stackPanel = new();
 
-            private Brush colorWhenButtonHover = Helper.StringToSolidColorBrush("#3d3d3d");
-            private static Brush color = Brushes.Transparent;
+
+            private Brush BGcolorOnHover = Helper.StringToSolidColorBrush("#3d3d3d");
+            private static Brush BGcolor = Brushes.Transparent;
             private static Brush symbolColor = Brushes.White;
             /// <summary>Gets or sets the color of the application buttons when hovered.</summary>
             public Brush ColorWhenButtonHover {
-                get => colorWhenButtonHover;
+                get => BGcolorOnHover;
                 set {
-                    colorWhenButtonHover = value;
-                    UpdateColors();
+                    BGcolorOnHover = value;
+                    UpdateButtonColors();
                 }
             }
+
             /// <summary>Gets or sets the color of the application buttons.</summary>
             public Brush Color {
-                get => color;
+                get => BGcolor;
                 set {
-                    color = value;
-                    UpdateColors();
+                    BGcolor = value;
+                    UpdateButtonColors();
                 }
             }
+
             /// <summary>Gets or sets the color of the symbol within the application buttons.</summary>
             public Brush SymbolColor {
                 get => symbolColor;
                 set {
                     symbolColor = value;
-                    UpdateColors();
+                    UpdateButtonColors();
                 }
             }
 
 
-            private WindowHandle windowHandle;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="ApplicationButtonCollection"/> class.
@@ -566,25 +614,26 @@ namespace Utillities.Wpf
                 this.windowHandle = windowHandle;
 
 
+
                 exitButton.Style = ButtonStyle();
                 exitButton.Content = "x";
                 exitButton.Click += Shutdown;
-                exitButton.MouseEnter += (s, e) => { exitButton.Background = colorWhenButtonHover; };
-                exitButton.MouseLeave += (s, e) => { exitButton.Background = color; };
+                exitButton.MouseEnter += (s, e) => { exitButton.Background = BGcolorOnHover; };
+                exitButton.MouseLeave += (s, e) => { exitButton.Background = BGcolor; };
                 Helper.SetWindowChromActive(exitButton);
 
                 minimizeButton.Style = ButtonStyle();
                 minimizeButton.Content = "-";
                 minimizeButton.Click += Minimize;
-                minimizeButton.MouseEnter += (s, e) => { minimizeButton.Background = colorWhenButtonHover; };
-                minimizeButton.MouseLeave += (s, e) => { minimizeButton.Background = color; };
+                minimizeButton.MouseEnter += (s, e) => { minimizeButton.Background = BGcolorOnHover; };
+                minimizeButton.MouseLeave += (s, e) => { minimizeButton.Background = BGcolor; };
                 Helper.SetWindowChromActive(minimizeButton);
 
                 maximizeButton.Style = ButtonStyle();
                 maximizeButton.Content = "□";
                 maximizeButton.Click += Maximize;
-                maximizeButton.MouseEnter += (s, e) => { maximizeButton.Background = colorWhenButtonHover; };
-                maximizeButton.MouseLeave += (s, e) => { maximizeButton.Background = color; };
+                maximizeButton.MouseEnter += (s, e) => { maximizeButton.Background = BGcolorOnHover; };
+                maximizeButton.MouseLeave += (s, e) => { maximizeButton.Background = BGcolor; };
                 Helper.SetWindowChromActive(maximizeButton);
 
 
@@ -596,20 +645,22 @@ namespace Utillities.Wpf
                 stackPanel.Children.Add(maximizeButton);
                 stackPanel.Children.Add(exitButton);
 
-                UpdateColors();
-                UpdateSize();
+                UpdateButtonColors();
+                UpdateButtonSize();
             }
 
             /// <summary>
             /// Adds the settings button to the collection.
             /// </summary>
             public void AddSettingsButton() {
-                windowHandle.mainGrid.ColumnDefinitions[1].Width = new GridLength(width * 4);
+                settingsButton = new();
+
+                windowHandle.mainGrid.ColumnDefinitions[1].Width = new GridLength((stackPanel.Children.Count + 1) * width);
 
                 settingsButton.Style = ButtonStyle();
                 settingsButton.Click += Settings;
-                settingsButton.MouseEnter += (s, e) => { settingsButton.Background = colorWhenButtonHover; };
-                settingsButton.MouseLeave += (s, e) => { settingsButton.Background = color; };
+                settingsButton.MouseEnter += (s, e) => settingsButton.Background = BGcolorOnHover;
+                settingsButton.MouseLeave += (s, e) => settingsButton.Background = BGcolor;
 
                 var container = new Border {
                     HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -626,8 +677,40 @@ namespace Utillities.Wpf
                 Helper.SetWindowChromActive(settingsButton);
                 stackPanel.Children.Insert(0, settingsButton);
 
-                UpdateColors();
-                UpdateSize();
+                UpdateButtonColors();
+                UpdateButtonSize();
+            }
+
+            /// <summary>
+            /// Adds the fullscreen button to the collection.
+            /// </summary>
+            public void AddFullcreenButton() {
+                fullscreenButton = new();
+
+                windowHandle.mainGrid.ColumnDefinitions[1].Width = new GridLength((stackPanel.Children.Count + 1) * width);
+
+                var container = new Border {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                };
+                fullscreenButton.Content = container;
+
+                var imageContent = new System.Windows.Controls.Image {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                container.Child = imageContent;
+
+                fullscreenButton.Style = ButtonStyle();
+                fullscreenButton.MouseEnter += (s, e) => { fullscreenButton.Background = BGcolorOnHover; };
+                fullscreenButton.MouseLeave += (s, e) => { fullscreenButton.Background = BGcolor; };
+                fullscreenButton.Click += Fullscreen;
+
+                Helper.SetWindowChromActive(fullscreenButton);
+                stackPanel.Children.Insert(0, fullscreenButton);
+
+                UpdateButtonColors();
+                UpdateButtonSize();
             }
 
             /// <summary>
@@ -637,7 +720,7 @@ namespace Utillities.Wpf
             public static Style ButtonStyle() {
                 // Create a new style for the button
                 Style style = new Style(typeof(Button));
-                style.Setters.Add(new Setter(Button.BackgroundProperty, color));
+                style.Setters.Add(new Setter(Button.BackgroundProperty, BGcolor));
                 style.Setters.Add(new Setter(Button.ForegroundProperty, symbolColor));
                 style.Setters.Add(new Setter(Button.BorderBrushProperty, Brushes.Transparent));
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Right));
@@ -702,8 +785,20 @@ namespace Utillities.Wpf
             /// </summary>
             /// <param name="action">The custom action to be executed on settings button click.</param>
             public void OverrideSettings(Action action) {
+                if (settingsButton is null) return;
+
                 settingsButton.Click -= Settings;
                 settingsButton.Click += (object sender, RoutedEventArgs e) => action();
+            }
+            /// <summary>
+            /// Overrides the default fullscreen button behavior with a custom action.
+            /// </summary>
+            /// <param name="action"></param>
+            public void OverrideFullscreen(Action action) {
+                if (fullscreenButton is null) return;
+
+                fullscreenButton.Click -= Fullscreen;
+                fullscreenButton.Click += (s, e) => action();
             }
 
             private void Shutdown(object sender, RoutedEventArgs e) {
@@ -727,18 +822,38 @@ namespace Utillities.Wpf
             private void Settings(object sender, RoutedEventArgs e) {
                 // Acting as a dummy method
             }
+            private void Fullscreen(object sender, RoutedEventArgs e) {
+                if (!isFullscreen) {
+                    prevWindowState = new _WindowState(window.WindowState, window.Top, window.Left, window.Width, window.Height);
+
+                    isFullscreen = true;
+                    window.WindowState = WindowState.Normal;
+                    window.Left = 0;
+                    window.Top = 0;
+                    window.Width = SystemParameters.PrimaryScreenWidth;
+                    window.Height = SystemParameters.PrimaryScreenHeight;
+                }
+                else {
+                    isFullscreen = false;
+                    window.WindowState = prevWindowState!.Value.windowState;
+                    window.Left = prevWindowState.Value.Left;
+                    window.Top = prevWindowState.Value.Top;
+                    window.Width = prevWindowState.Value.Width;
+                    window.Height = prevWindowState.Value.Height;
+
+                    prevWindowState = null;
+                }
+            }
 
             /// <summary>
-            /// 
+            /// Forces the Sizes of the buttons to update.
             /// </summary>
-            public void UpdateSize() {
+            public void UpdateButtonSize() {
                 exitButton.Width = Width;
                 exitButton.Height = Height;
 
-
                 minimizeButton.Width = Width;
                 minimizeButton.Height = Height;
-
 
                 maximizeButton.Width = Width;
                 maximizeButton.Height = Height;
@@ -747,29 +862,55 @@ namespace Utillities.Wpf
                     settingsButton.Width = Width;
                     settingsButton.Height = Height;
                 }
+
+                if (fullscreenButton != null) {
+                    fullscreenButton.Width = Width;
+                    fullscreenButton.Height = Height;
+                }
             }
             /// <summary>
-            /// 
+            /// Forces the colors of the buttons to update.
             /// </summary>
-            public void UpdateColors() {
-                exitButton.Background = color;
+            public void UpdateButtonColors() {
+                exitButton.Background = BGcolor;
                 exitButton.Foreground = symbolColor;
-                Helper.UpdateButtonHoverColor(ExitButton, colorWhenButtonHover);
 
-
-                minimizeButton.Background = color;
+                minimizeButton.Background = BGcolor;
                 minimizeButton.Foreground = symbolColor;
-                Helper.UpdateButtonHoverColor(minimizeButton, colorWhenButtonHover);
 
 
-                maximizeButton.Background = color;
+                maximizeButton.Background = BGcolor;
                 maximizeButton.Foreground = symbolColor;
-                Helper.UpdateButtonHoverColor(maximizeButton, colorWhenButtonHover);
 
                 if (settingsButton != null) {
-                    settingsButton.Background = color;
-                    settingsButton.Foreground = symbolColor;
-                    Helper.UpdateButtonHoverColor(settingsButton, colorWhenButtonHover);
+                    settingsButton.Background = BGcolor;
+                }
+
+                if (fullscreenButton != null) {
+                    fullscreenButton.Background = BGcolor;
+                }
+            }
+
+            
+
+
+            private struct _WindowState {
+                public WindowState windowState;
+                public double Top;
+                public double Left;
+                public double Width;
+                public double Height;
+
+                public _WindowState(WindowState windowState,
+                                    double Top,
+                                    double Left,
+                                    double Width,
+                                    double Height) {
+                    this.windowState = windowState;
+                    this.Top = Top;
+                    this.Left = Left;
+                    this.Width = Width;
+                    this.Height = Height;
                 }
             }
         }
