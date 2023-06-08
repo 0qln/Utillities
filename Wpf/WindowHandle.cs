@@ -455,6 +455,10 @@ namespace Utillities.Wpf
             private const string ARROW_BOTTOMRIGHT = "🡮";
             private bool isFullscreen = false;
             private _WindowState? prevWindowState;
+            private bool exitSpriteActivated = false;
+            private bool minimizeSpriteActivated = false;
+            private bool maximizeSpriteActivated = false;
+
             private static double height = 30;
             private static double width = 40;
             /// <summary>Gets the fullscreen state of the window.</summary>
@@ -498,14 +502,135 @@ namespace Utillities.Wpf
             private Button exitButton = new();
             private Button minimizeButton = new();
             private Button maximizeButton = new();
+            private string? windowedButtonSource;
+            private string? maximizedButtonSource;
+
             /// <summary>Gets the exit button.</summary>
             public Button ExitButton => exitButton;
+            /// <summary>Gets or sets the image source for the exit button.</summary>
+            public string? ExitButtonImageSource {
+                get {
+                    if (!exitSpriteActivated) throw new NotActivatedException("Exit");
+
+                    return ((exitButton.Content as Border)!.Child as System.Windows.Controls.Image)!.Source.ToString();
+                }
+                set {
+                    if (!exitSpriteActivated) throw new NotActivatedException("Exit");
+
+                    var imageContent = ((exitButton.Content as Border)!.Child as System.Windows.Controls.Image)!;
+                    imageContent.Source = new BitmapImage(new Uri(value!));
+                }
+            }
+            /// <summary>Gets or sets the padding for the exit button image.</summary>
+            public Thickness ExitButtonImagePadding {
+                get {
+                    if (!exitSpriteActivated) throw new NotActivatedException("Exit");
+
+                    return (exitButton.Content as Border)!.Padding;
+                }
+                set {
+                    if (!exitSpriteActivated) throw new NotActivatedException("Exit");
+
+                    (exitButton.Content as Border)!.Padding = value;
+                }
+            }
+
 
             /// <summary>Gets the minimize button.</summary>
             public Button MinimizeButton => minimizeButton;
+            /// <summary>Gets or sets the image source for the minimize button.</summary>
+            public string? MinimizeButtonImageSource {
+                get {
+                    if (!minimizeSpriteActivated) throw new NotActivatedException("Minimize");
+
+                    return ((minimizeButton.Content as Border)!.Child as System.Windows.Controls.Image)!.Source.ToString();
+                }
+                set {
+                    if (!minimizeSpriteActivated) throw new NotActivatedException("Minimize");
+
+                    var imageContent = ((minimizeButton.Content as Border)!.Child as System.Windows.Controls.Image)!;
+                    imageContent.Source = new BitmapImage(new Uri(value!));
+                }
+            }
+            /// <summary>Gets or sets the padding for the minimize button image.</summary>
+            public Thickness MinimizeButtonImagePadding {
+                get {
+                    if (!minimizeSpriteActivated) throw new NotActivatedException("Minimize");
+
+                    return (minimizeButton.Content as Border)!.Padding;
+                }
+                set {
+                    if (!minimizeSpriteActivated) throw new NotActivatedException("Minimize");
+
+                    (minimizeButton.Content as Border)!.Padding = value;
+                }
+            }
+
 
             /// <summary>Gets the maximize button.</summary>
             public Button MaximizeButton => maximizeButton;
+            /// <summary>Gets or sets the image source for the maximize button.</summary>
+            public string? MaximizeButtonImageSource {
+                get {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+                    return ((maximizeButton.Content as Border)!.Child as System.Windows.Controls.Image)!.Source.ToString();
+                }
+                set {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+                    var imageContent = ((maximizeButton.Content as Border)!.Child as System.Windows.Controls.Image)!;
+                    imageContent.Source = new BitmapImage(new Uri(value!));
+                }
+            }
+            /// <summary>Gets or sets the image source for the maximize button when it is maximized.</summary>
+            public string? MaximizeButtonImageSourceWhenMaximized {
+                get {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+
+                    return maximizedButtonSource;
+                }
+                set {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+
+                    maximizedButtonSource = value;
+
+                    if (window.WindowState == WindowState.Maximized) {
+                        var imageContent = ((maximizeButton.Content as Border)!.Child as System.Windows.Controls.Image)!;
+                        imageContent.Source = new BitmapImage(new Uri(value!));
+                    }
+                }
+            }
+            /// <summary>Gets or sets the padding for the maximize button image.</summary>
+            public Thickness MaximizeButtonImagePadding {
+                get {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+
+                    return (maximizeButton.Content as Border)!.Padding;
+                }
+                set {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize"); 
+
+                    (maximizeButton.Content as Border)!.Padding = value;
+                }
+            }
+            /// <summary>Gets or sets the image source for the maximize button when it is windowed</summary>
+            public string? MaximizeButtonImageSourceWhenWindowed {
+                get {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+
+                    return windowedButtonSource;
+                }
+                set {
+                    if (!maximizeSpriteActivated) throw new NotActivatedException("Maximize");
+
+                    windowedButtonSource = value;
+
+                    if (window.WindowState != WindowState.Normal) {
+                        var imageContent = ((maximizeButton.Content as Border)!.Child as System.Windows.Controls.Image)!;
+                        imageContent.Source = new BitmapImage(new Uri(value!));
+                    }
+                }
+            }
+
 
             /// <summary>Gets the settings button.</summary>
             public Button? SettingsButton => settingsButton;
@@ -538,6 +663,7 @@ namespace Utillities.Wpf
                 }
             }
 
+
             /// <summary>Gets the fullscreen button.</summary>
             public Button? FullscreenButton => fullscreenButton;
             /// <summary>Gets or sets the image source for the fullscreen button.</summary>
@@ -568,6 +694,7 @@ namespace Utillities.Wpf
                     (fullscreenButton.Content as Border)!.Padding = value;
                 }
             }
+
 
             /// <summary>Gets the framework element which contains the application buttons.</summary>
             public FrameworkElement FrameworkElement => stackPanel;
@@ -623,12 +750,14 @@ namespace Utillities.Wpf
                 exitButton.MouseLeave += (s, e) => { exitButton.Background = BGcolor; };
                 Helper.SetWindowChromActive(exitButton);
 
+
                 minimizeButton.Style = ButtonStyle();
                 minimizeButton.Content = "-";
                 minimizeButton.Click += Minimize;
                 minimizeButton.MouseEnter += (s, e) => { minimizeButton.Background = BGcolorOnHover; };
                 minimizeButton.MouseLeave += (s, e) => { minimizeButton.Background = BGcolor; };
                 Helper.SetWindowChromActive(minimizeButton);
+
 
                 maximizeButton.Style = ButtonStyle();
                 maximizeButton.Content = "□";
@@ -650,6 +779,51 @@ namespace Utillities.Wpf
                 UpdateButtonSize();
             }
 
+            private class NotActivatedException : Exception {
+                public NotActivatedException(string button) 
+                    : base($"The sprite for the {button} button has not been activated yet. Consider calling `Activate{button}ButtonSprite()` before this.") 
+                { 
+                }
+            }
+
+            /// <summary>
+            /// Will prepare the exit button to have an image as content.
+            /// </summary>
+            public void ActivateExitButtonSprite() {
+                ActivateButton(exitButton);
+                exitSpriteActivated = true;
+            }
+
+            /// <summary>
+            /// Will prepare the exit button to have an image as content.
+            /// </summary>
+            public void ActivateMaximizeButtonSprite() {
+                ActivateButton(maximizeButton);
+                maximizeSpriteActivated = true;
+            }
+
+            /// <summary>
+            /// Will prepare the exit button to have an image as content.
+            /// </summary>
+            public void ActivateMinimizeButtonSprite() {
+                ActivateButton(minimizeButton);
+                minimizeSpriteActivated = true;
+            }
+
+            private void ActivateButton(Button button) {
+                var container = new Border {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                };
+                button.Content = container;
+
+                var imageContent = new System.Windows.Controls.Image {
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center
+                };
+                container.Child = imageContent;
+            }
+
             /// <summary>
             /// Adds the settings button to the collection.
             /// </summary>
@@ -663,17 +837,7 @@ namespace Utillities.Wpf
                 settingsButton.MouseEnter += (s, e) => settingsButton.Background = BGcolorOnHover;
                 settingsButton.MouseLeave += (s, e) => settingsButton.Background = BGcolor;
 
-                var container = new Border {
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch,
-                };
-                settingsButton.Content = container;
-
-                var imageContent = new System.Windows.Controls.Image {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                container.Child = imageContent;
+                ActivateButton(settingsButton);
 
                 Helper.SetWindowChromActive(settingsButton);
                 stackPanel.Children.Insert(0, settingsButton);
@@ -690,22 +854,12 @@ namespace Utillities.Wpf
 
                 windowHandle.mainGrid.ColumnDefinitions[1].Width = new GridLength((stackPanel.Children.Count + 1) * width);
 
-                var container = new Border {
-                    HorizontalAlignment = HorizontalAlignment.Stretch,
-                    VerticalAlignment = VerticalAlignment.Stretch,
-                };
-                fullscreenButton.Content = container;
-
-                var imageContent = new System.Windows.Controls.Image {
-                    HorizontalAlignment = HorizontalAlignment.Center,
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-                container.Child = imageContent;
-
                 fullscreenButton.Style = ButtonStyle();
                 fullscreenButton.MouseEnter += (s, e) => { fullscreenButton.Background = BGcolorOnHover; };
                 fullscreenButton.MouseLeave += (s, e) => { fullscreenButton.Background = BGcolor; };
                 fullscreenButton.Click += Fullscreen;
+
+                ActivateButton(fullscreenButton);
 
                 Helper.SetWindowChromActive(fullscreenButton);
                 stackPanel.Children.Insert(0, fullscreenButton);
@@ -726,6 +880,7 @@ namespace Utillities.Wpf
                 style.Setters.Add(new Setter(Button.BorderBrushProperty, Brushes.Transparent));
                 style.Setters.Add(new Setter(Button.HorizontalAlignmentProperty, HorizontalAlignment.Right));
                 style.Setters.Add(new Setter(Button.VerticalAlignmentProperty, VerticalAlignment.Top));
+                style.Setters.Add(new Setter(Button.FontSizeProperty, 13.0));
                 style.Setters.Add(new Setter(Button.WidthProperty, width));
                 style.Setters.Add(new Setter(Button.HeightProperty, height));
 
@@ -815,10 +970,18 @@ namespace Utillities.Wpf
                 if (window.WindowState == WindowState.Maximized) {
                     // Go into windowed
                     window.WindowState = WindowState.Normal;
+
+                    if (maximizeSpriteActivated) {
+                        MaximizeButtonImageSource = maximizedButtonSource;
+                    }
                 }
                 else {
                     // Go into maximized
                     window.WindowState = WindowState.Maximized;
+
+                    if (maximizeSpriteActivated) {
+                        MaximizeButtonImageSource = windowedButtonSource;
+                    }
                 }
                 // Update Layout
                 window.UpdateLayout();
