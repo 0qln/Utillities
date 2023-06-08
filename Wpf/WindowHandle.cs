@@ -63,6 +63,7 @@ namespace Utillities.Wpf
         /// <param name="window">The window associated with the WindowHandle.</param>
         public WindowHandle(Window window) {
             this.window = window;
+            window.WindowStyle = WindowStyle.None;
 
             // var
             WindowChrome.SetWindowChrome(window, windowChrome);
