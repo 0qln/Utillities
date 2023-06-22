@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -11,11 +12,13 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Shell;
+using System.Xml;
 
 namespace Utillities.Wpf
 {
@@ -105,10 +108,7 @@ namespace Utillities.Wpf
             clientButtonStackPanel.Background = Brushes.Transparent;
             clientButtonStackPanel.Orientation = Orientation.Horizontal;
 
-            var wrap = WindowWrapper.Wrap(window);
-            parentContainer = wrap.Item1;
-            windowBorder = wrap.Item2;
-            rectangleGeometry = wrap.Item3;
+            WindowWrapper.Wrap(window, out parentContainer, out windowBorder, out rectangleGeometry);
             parentContainer.Children.Add(FrameworkElement);
         }
 
@@ -634,7 +634,7 @@ namespace Utillities.Wpf
 
             /// <summary>Gets the settings button.</summary>
             public Button? SettingsButton => settingsButton;
-            /// <summary>Gets or sets the image source for the settings button.</summary>
+            /// <summary>Gets or sets the image source for the settings button. Expects an image file, like `png`.</summary>
             public string? SettingsButtonImageSource {
                 get {
                     if (settingsButton == null) return null;
@@ -649,8 +649,33 @@ namespace Utillities.Wpf
                     imageContent.Source = new BitmapImage(new Uri(value!));
                 }
             }
+            public string? SettingsButtonXmlSource {
+                set {
+                    if (!File.Exists(value)) {
+                        return;
+                    }
+                    using StreamReader sr = new StreamReader(value!);
+                    using XmlReader xmlReader = XmlReader.Create(sr);
+
+                    Rectangle rect = new Rectangle {
+                        Width = width,
+                        Height = height
+                    };
+                    DrawingBrush brush = new();
+                    rect.Fill = brush;
+                    brush.Drawing = (Drawing)XamlReader.Load(xmlReader);
+                    
+                    (settingsButton.Content as Border)!.Child = rect;
+                }
+            }
+            /// <summary>Set the content of the settings button directly.</summary>
+            public object SettingsButtonContent {
+                set {
+                    settingsButton.Content = value;
+                }
+            }
             /// <summary>Gets or sets the padding for the settings button image.</summary>
-            public Thickness SettingsButtonImagePadding {
+            public Thickness SettingsButtonContentPadding {
                 get {
                     if (settingsButton == null) return new Thickness();
 

@@ -16,9 +16,15 @@ namespace Utillities.Wpf {
         /// Will wrap the window in a border which allows for better customization.
         /// </summary>
         /// <param name="window">The window to be wrapped</param>
-        /// <returns>If the old content of the Window was a Panel, it will be returned as is. 
-        /// If not, a new Canvas will be created and the old Content of the window will be added to the newly created for further usage of the window.</returns>
-        public static (Panel, Border, RectangleGeometry) Wrap(Window window) {
+        /// <param name="pPanel">Output parameter that receives the panel containing the window's content.</param>
+        /// <param name="pBorder">Output parameter that receives the border wrapping the window.</param>
+        /// <param name="pRectangleGeometry">Output parameter that receives the rectangle geometry used for clipping.</param>
+        /// <remarks>
+        /// If the old content of the window was not a Panel, a new Canvas is created, and the old content of the window is added to the newly created panel for further usage of the window.
+        /// The original content of the window is set to null before wrapping it in the border.
+        /// The rectangle geometry is used to clip the wrapped content to the size of the window.
+        /// </remarks>
+        public static void Wrap(Window window, out Panel pPanel, out Border pBorder, out RectangleGeometry pRectangleGeometry) {
             Panel newPanel;
             if (window.Content is Panel)
                 newPanel = (window.Content as Panel)!;
@@ -46,7 +52,10 @@ namespace Utillities.Wpf {
             };
 
             window.Content = border;
-            return (newPanel, border, rectangleGeometry);
+
+            pPanel = newPanel;
+            pBorder = border;
+            pRectangleGeometry = rectangleGeometry;
         }
 
     }
