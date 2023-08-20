@@ -449,6 +449,21 @@ namespace Utillities.Wpf
             private Window window;
             private WindowHandle windowHandle;
 
+            public static readonly string FULLSCRREN_1 = "⛶";
+
+            public static readonly string EXIT_1 = "✕";
+            public static readonly string EXIT_2 = "x";
+            public static readonly string EXIT_3 = "🗙︎";
+
+            public static readonly string MINIMIZE_1 = "🗕";
+            public static readonly string MINIMIZE_2 = "-";
+            public static readonly string MINIMIZE_3 = "_";
+
+            public static readonly string MAXIMIZE_1 = "🗖︎";
+            public static readonly string MAXIMIZE_2 = "🗗︎";
+
+            public static readonly string SETTINGS_1 = "⚙";
+
             private const string ARROW_TOPLEFT = "🡬";
             private const string ARROW_TOPRIGHT = "🡭";
             private const string ARROW_BOTTOMLEFT = "🡯";
@@ -769,7 +784,7 @@ namespace Utillities.Wpf
 
 
                 exitButton.Style = ButtonStyle();
-                exitButton.Content = "x";
+                exitButton.Content = EXIT_3;
                 exitButton.Click += Shutdown;
                 exitButton.MouseEnter += (s, e) => { exitButton.Background = BGcolorOnHover; };
                 exitButton.MouseLeave += (s, e) => { exitButton.Background = BGcolor; };
@@ -777,7 +792,7 @@ namespace Utillities.Wpf
 
 
                 minimizeButton.Style = ButtonStyle();
-                minimizeButton.Content = "-";
+                minimizeButton.Content = MINIMIZE_1;
                 minimizeButton.Click += Minimize;
                 minimizeButton.MouseEnter += (s, e) => { minimizeButton.Background = BGcolorOnHover; };
                 minimizeButton.MouseLeave += (s, e) => { minimizeButton.Background = BGcolor; };
@@ -785,7 +800,7 @@ namespace Utillities.Wpf
 
 
                 maximizeButton.Style = ButtonStyle();
-                maximizeButton.Content = "□";
+                maximizeButton.Content = MAXIMIZE_2;
                 maximizeButton.Click += Maximize;
                 maximizeButton.MouseEnter += (s, e) => { maximizeButton.Background = BGcolorOnHover; };
                 maximizeButton.MouseLeave += (s, e) => { maximizeButton.Background = BGcolor; };
@@ -880,13 +895,13 @@ namespace Utillities.Wpf
                 windowHandle.mainGrid.ColumnDefinitions[1].Width = new GridLength((stackPanel.Children.Count + 1) * width);
 
                 fullscreenButton.Style = ButtonStyle();
+                fullscreenButton.Click += Fullscreen;
                 fullscreenButton.MouseEnter += (s, e) => { fullscreenButton.Background = BGcolorOnHover; };
                 fullscreenButton.MouseLeave += (s, e) => { fullscreenButton.Background = BGcolor; };
-                fullscreenButton.Click += Fullscreen;
+                Helper.SetWindowChromActive(fullscreenButton);
 
                 ActivateButton(fullscreenButton);
 
-                Helper.SetWindowChromActive(fullscreenButton);
                 stackPanel.Children.Insert(0, fullscreenButton);
 
                 UpdateButtonColors();
@@ -932,9 +947,8 @@ namespace Utillities.Wpf
                 Helper.SetWindowChromActive(exitButton);
                 Helper.SetWindowChromActive(minimizeButton);
                 Helper.SetWindowChromActive(maximizeButton);
-                if (settingsButton != null) {
-                    Helper.SetWindowChromActive(settingsButton);
-                }
+                if (settingsButton != null) Helper.SetWindowChromActive(settingsButton);
+                if (fullscreenButton != null) Helper.SetWindowChromActive(fullscreenButton);
             }
 
             /// <summary>

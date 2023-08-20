@@ -1,4 +1,3 @@
-D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.csproj.AssemblyReference.cache
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities_MarkupCompile.cache
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities_MarkupCompile.lref
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.dll
