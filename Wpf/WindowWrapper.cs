@@ -8,6 +8,43 @@ using System.Windows.Media;
 using System.Windows;
 
 namespace Utillities.Wpf {
+
+    /// <summary>
+    /// A wrapping for a WPF window.
+    /// </summary>
+    public record class WindowWrapping
+    {
+        /// <summary>
+        /// The new parent container, that is supposed to hold all 
+        /// the windows content.
+        /// </summary>
+        public Panel Panel;
+
+        /// <summary>
+        /// The new Border that will surround the window.
+        /// </summary>
+        public Border Border;
+
+        /// <summary>
+        /// A `RectangleGeometry` object to help the with border visuals, such as clipping.
+        /// </summary>
+        public RectangleGeometry RectangleGeometry;
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="panel"></param>
+        /// <param name="border"></param>
+        /// <param name="rectangleGeometry"></param>
+        public WindowWrapping(Panel panel, Border border, RectangleGeometry rectangleGeometry)
+        {
+            Panel = panel;
+            Border = border;
+            RectangleGeometry = rectangleGeometry;
+        }
+    }
+    
+
     /// <summary>
     /// Provides a quick way to wrap a window in a border for depper customization.
     /// </summary>
@@ -16,15 +53,12 @@ namespace Utillities.Wpf {
         /// Will wrap the window in a border which allows for better customization.
         /// </summary>
         /// <param name="window">The window to be wrapped</param>
-        /// <param name="pPanel">Output parameter that receives the panel containing the window's content.</param>
-        /// <param name="pBorder">Output parameter that receives the border wrapping the window.</param>
-        /// <param name="pRectangleGeometry">Output parameter that receives the rectangle geometry used for clipping.</param>
         /// <remarks>
         /// If the old content of the window was not a Panel, a new Canvas is created, and the old content of the window is added to the newly created panel for further usage of the window.
         /// The original content of the window is set to null before wrapping it in the border.
         /// The rectangle geometry is used to clip the wrapped content to the size of the window.
         /// </remarks>
-        public static void Wrap(Window window, out Panel pPanel, out Border pBorder, out RectangleGeometry pRectangleGeometry) {
+        public static WindowWrapping Wrap(Window window) {
             Panel newPanel;
             if (window.Content is Panel)
                 newPanel = (window.Content as Panel)!;
@@ -53,9 +87,7 @@ namespace Utillities.Wpf {
 
             window.Content = border;
 
-            pPanel = newPanel;
-            pBorder = border;
-            pRectangleGeometry = rectangleGeometry;
+            return new WindowWrapping(newPanel, border, rectangleGeometry);
         }
 
     }

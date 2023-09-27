@@ -19,9 +19,107 @@ using System.Windows.Shell;
 namespace Utillities.Wpf
 {
     /// <summary>
+    /// A builder class to instanciate a DropDownMenu in a single line, for better readebility.
+    /// </summary>
+    public class DropDownMenuBuilder
+    {
+        /// <summary>
+        /// The Menu that is currently being contructed.
+        /// </summary>
+        public DropDownMenu Menu { get; set; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="rootWindow"></param>
+        public DropDownMenuBuilder(string name, Window rootWindow)
+        {
+            Menu = new DropDownMenu(name, rootWindow);
+        }
+
+        /// <summary>
+        /// Constructor with menu options.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="rootWindow"></param>
+        /// <param name="menuOptions"></param>
+        public DropDownMenuBuilder(string name, Window rootWindow, params MenuOptionWrapper[] menuOptions)
+        {
+            Menu = new DropDownMenu(name, rootWindow);
+
+            foreach (var option in menuOptions)
+            {
+                Menu.AddOption(option.Build(Menu));
+            }
+        }
+    }
+
+    /// <summary>
+    /// A builder class to instanciate a MenuOption in a single line, for better readebility.
+    /// </summary>
+    public class MenuOptionWrapper
+    {
+        private string _name;
+        private Window _rootWindow;
+        private double _height;
+        private DropDownMenuBuilder[] _childMenus;
+
+        public DropDownMenu.MenuOption Option { get; set; }
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="rootWindow"></param>
+        /// <param name="height"></param>
+        public MenuOptionWrapper(string name, Window rootWindow, double height = -1)
+        {
+            _height = height == -1 ? DropDownMenu.DefaultOptionHeight : height;
+            _name = name;
+            _rootWindow = rootWindow;
+            _childMenus = new DropDownMenuBuilder[0];
+        }
+        /// <summary>
+        /// Constructor with the option to add child options.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="rootWindow"></param>
+        /// <param name="height"></param>
+        /// <param name="childMenus"></param>
+        public MenuOptionWrapper(string name, Window rootWindow, double height = -1,
+            params DropDownMenuBuilder[] childMenus)
+        {
+            _height = height == -1 ? DropDownMenu.DefaultOptionHeight : height;
+            _name = name;
+            _rootWindow = rootWindow;
+            _childMenus = childMenus;
+        }
+
+        /// <summary>
+        /// Instanciates a new MenuOption object.
+        /// </summary>
+        /// <param name="parentMenu"></param>
+        /// <returns></returns>
+        internal DropDownMenu.MenuOption Build(DropDownMenu parentMenu)
+        {
+            var option = new DropDownMenu.MenuOption(_height, _name, parentMenu);
+
+            foreach (var childMenu in _childMenus)
+            {
+                option.AddDropdownMenu(childMenu.Menu);
+            }
+
+            Option = option;
+
+            return option;
+        }
+    }
+
+    /// <summary>
     /// Represents a drop-down menu in a WPF application. 
     /// </summary>
-    public class DropDownMenu {
+    public class DropDownMenu : IPopupMenu {
         private Window rootWindow;
         private bool isChildOfMenu = false;
         private DropDownMenu? parentMenu;
@@ -34,6 +132,16 @@ namespace Utillities.Wpf
         private string name;
 
         /// <summary>
+        /// Used for internals.
+        /// </summary>
+        public bool IsTopMenu { get; set; } = false;
+
+        /// <summary>
+        /// The default height for menu options.
+        /// </summary>
+        public static readonly double DefaultOptionHeight = 22;
+
+        /// <summary>
         /// Gets the position of the drop-down menu.
         /// </summary>
         public Point Position => position;
@@ -41,7 +149,7 @@ namespace Utillities.Wpf
         /// <summary>
         /// Gets the UI element of the drop-down menu.
         /// </summary>
-        public FrameworkElement UIElement => border;
+        public FrameworkElement FrameworkElement => border;
 
         /// <summary>
         /// Gets the list of menu options in the drop-down menu.
@@ -53,6 +161,11 @@ namespace Utillities.Wpf
         /// </summary>
         public string Name => name;
 
+
+        public void Toggle()
+        {
+            throw new NotImplementedException();
+        }
         /// <summary>
         /// Initializes a new instance of the DropDownMenu class with the specified name and root window.
         /// </summary>
@@ -69,7 +182,7 @@ namespace Utillities.Wpf
         /// </summary>
         /// <param name="parent">The parent element.</param>
         public void Instanciate(FrameworkElement parent) {
-            this.parentElement = parent;
+            parentElement = parent;
         }
 
         /// <summary>
@@ -95,36 +208,36 @@ namespace Utillities.Wpf
         /// </summary>
         /// <param name="canvas">The canvas on which the drop-down menu is placed.</param>
         public void SetCanvas(Canvas canvas) {
-            canvas.Children.Add(UIElement);
+            canvas.Children.Add(FrameworkElement);
         }
 
         /// <summary>
         /// Toggles the visibility of the drop-down menu.
         /// </summary>
         public void ToggleVisibility() {
-            if (UIElement.Visibility == Visibility.Visible) {
+            if (FrameworkElement.Visibility == Visibility.Visible) {
                 Hide();
             }
-            else if (UIElement.Visibility == Visibility.Collapsed) {
-                Show();
+            else if (FrameworkElement.Visibility == Visibility.Collapsed) {
+                Expand();
             }
         }
 
         /// <summary>
         /// Shows the drop-down menu.
         /// </summary>
-        public void Show() => UIElement.Visibility = Visibility.Visible;
+        public void Expand() => FrameworkElement.Visibility = Visibility.Visible;
 
         /// <summary>
         /// Hides the drop-down menu.
         /// </summary>
-        public void Hide() => UIElement.Visibility = Visibility.Collapsed;
+        public void Hide() => FrameworkElement.Visibility = Visibility.Collapsed;
 
         /// <summary>
         /// Hides the drop-down menu and its child menus.
         /// </summary>
-        public void HideWidthChildrenMenus() {
-            UIElement.Visibility = Visibility.Collapsed;
+        public void Collapse() {
+            FrameworkElement.Visibility = Visibility.Collapsed;
             foreach (var option in options) {
                 if (option.HasMenu) {
                     option.HideChildrenMenu();
@@ -170,7 +283,8 @@ namespace Utillities.Wpf
         /// <param name="name">The name of the menu option.</param>
         /// <param name="height">The height of the menu option.</param>
         /// <returns>The created menu option.</returns>
-        public MenuOption AddOption(string name, double height = 22) {
+        public MenuOption AddOption(string name, double height = -1) {
+            if (height == -1) height = DefaultOptionHeight;
             return AddOption(NewOption(name, height));
         }
 
@@ -182,7 +296,7 @@ namespace Utillities.Wpf
         public MenuOption AddOption(MenuOption option) {
             options.Add(option);
             verticalPanel.Children.Add(option.UIElement);
-            UpdateOptionLayout();
+            MeasureAndArrange();
             return option;
         }
 
@@ -217,7 +331,7 @@ namespace Utillities.Wpf
         /// <summary>
         /// Updates the layout of the menu options in the drop-down menu.
         /// </summary>
-        public void UpdateOptionLayout() {
+        public void MeasureAndArrange() {
             double maxWidth = 0;
             var grids = verticalPanel.Children.OfType<Grid>();
 
@@ -354,6 +468,7 @@ namespace Utillities.Wpf
                 grid.MouseLeave += (s, e) => grid.Background = Brushes.Transparent;
             }
 
+
             /// <summary>
             /// Adds a symbol to the menu option using the specified image path.
             /// </summary>
@@ -388,7 +503,7 @@ namespace Utillities.Wpf
                 arrow.Text = ">";
                 arrow.Foreground = Brushes.White;
 
-                this.childMenu = menu;
+                childMenu = menu;
                 hasMenu = true;
 
                 AddCommand(parentMenu.HideChildrenMenus);
@@ -410,7 +525,7 @@ namespace Utillities.Wpf
             /// Hides the child menu of the menu option.
             /// </summary>
             public void HideChildrenMenu() {
-                childMenu.HideWidthChildrenMenus();
+                childMenu.Collapse();
             }
 
             /// <summary>
