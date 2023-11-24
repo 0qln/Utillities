@@ -91,10 +91,19 @@ namespace Utillities.Wpf
             WindowChrome.SetIsHitTestVisibleInChrome(FrameworkElement, active);
         }
 
+        public void Add(params ClientButton[] buttons)
+        {
+            foreach (var b in buttons)
+            {
+                Add(b);
+            }
+        }
+
         public void Add(ClientButton item)
         {
             ((ICollection<ClientButton>)_objects).Add(item);
             _controls.Children.Add(item.FrameworkElement);
+            WindowChrome.SetIsHitTestVisibleInChrome(item.FrameworkElement, true);
         }
 
         public void Clear()
