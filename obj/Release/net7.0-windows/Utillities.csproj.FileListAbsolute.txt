@@ -6,8 +6,6 @@ D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.pdb
 D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\Utillities.deps.json
 D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\Utillities.dll
 D:\Programmmieren\Projects\Utillities\bin\Release\net7.0-windows\Utillities.pdb
-D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Themes\Generic.baml
-D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.g.resources
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.GeneratedMSBuildEditorConfig.editorconfig
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.AssemblyInfoInputs.cache
 D:\Programmmieren\Projects\Utillities\obj\Release\net7.0-windows\Utillities.AssemblyInfo.cs

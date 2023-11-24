@@ -692,15 +692,15 @@ namespace Utillities.Wpf
                 {
                     isFullscreen = true;
 
-                    prevWindowState = new _WindowState(window.WindowState, window.Top, window.Left, window.Width, window.Height, (windowHandle._parentContainer.Clip as RectangleGeometry)!.RadiusX);
+                    prevWindowState = new _WindowState(window.WindowState, window.Top, window.Left, window.Width, window.Height);
                     
                     window.WindowState = WindowState.Normal;
                     window.Left = 0;
                     window.Top = 0;
-                    windowHandle.Wrap.RectangleGeometry.RadiusX = 0;
-                    windowHandle.Wrap.RectangleGeometry.RadiusY = 0;
                     window.Width = SystemParameters.PrimaryScreenWidth;
                     window.Height = SystemParameters.PrimaryScreenHeight;
+
+                    windowHandle.Wrap.RoundedCorners = true;
 
                     OnFullscreen?.Invoke();
                 }
@@ -710,10 +710,10 @@ namespace Utillities.Wpf
                     window.WindowState = prevWindowState!.Value.windowState;
                     window.Left = prevWindowState.Value.Left;
                     window.Top = prevWindowState.Value.Top;
-                    (windowHandle._parentContainer.Clip as RectangleGeometry)!.RadiusX = prevWindowState.Value.CornerRadius;
-                    (windowHandle._parentContainer.Clip as RectangleGeometry)!.RadiusY = prevWindowState.Value.CornerRadius;
                     window.Width = prevWindowState.Value.Width;
                     window.Height = prevWindowState.Value.Height;
+
+                    windowHandle.Wrap.RoundedCorners = false;
 
                     prevWindowState = null;
                 }
@@ -787,21 +787,18 @@ namespace Utillities.Wpf
                 public double Left;
                 public double Width;
                 public double Height;
-                public double CornerRadius;
 
                 public _WindowState(WindowState windowState,
                                     double Top,
                                     double Left,
                                     double Width,
-                                    double Height,
-                                    double CornerRadius)
+                                    double Height)
                 {
                     this.windowState = windowState;
                     this.Top = Top;
                     this.Left = Left;
                     this.Width = Width;
                     this.Height = Height;
-                    this.CornerRadius = CornerRadius;
                 }
             }
         }

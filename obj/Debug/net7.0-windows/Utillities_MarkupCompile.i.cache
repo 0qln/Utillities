@@ -1,5 +1,5 @@
 ﻿Utillities
-1.0.0.0
+2.0.0.0
 
 library
 C#
@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 
-2-798192812
+1204305769
 
-17-1053819648
-1981827736222
-Themes\Generic.xaml;Wpf\WpfControls\Themes\Generic.xaml;
+171922957880
+198-306949569
+Themes\Generic.xaml;
 
-True
+False
 

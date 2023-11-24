@@ -31,6 +31,56 @@ namespace Utillities.Wpf {
         public RectangleGeometry RectangleGeometry;
 
         /// <summary>
+        /// Wether the window of will have rounded corners or not.
+        /// </summary>
+        public bool RoundedCorners
+        {
+            get
+            {
+                return _roundedCorners;
+            }
+            set
+            {
+                _roundedCorners = value;
+
+                if (_roundedCorners)
+                {
+                    RectangleGeometry.RadiusX = _cornerRadius;
+                    RectangleGeometry.RadiusY = _cornerRadius;
+                }
+                else
+                {
+                    RectangleGeometry.RadiusX = 0;
+                    RectangleGeometry.RadiusY = 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The radius of the corners of the window.
+        /// </summary>
+        public int CornerRadius
+        {
+            get
+            {
+                return _cornerRadius;
+            }
+            set
+            {
+                _cornerRadius = value;
+
+                if (RoundedCorners)
+                {
+                    RectangleGeometry.RadiusX = _cornerRadius;
+                    RectangleGeometry.RadiusY = _cornerRadius;
+                }
+            }
+        }
+
+        private int _cornerRadius;
+        private bool _roundedCorners;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="panel"></param>
@@ -41,7 +91,10 @@ namespace Utillities.Wpf {
             Panel = panel;
             Border = border;
             RectangleGeometry = rectangleGeometry;
+            _cornerRadius = 10;
+            _roundedCorners = true;
         }
+
     }
     
 
@@ -89,6 +142,5 @@ namespace Utillities.Wpf {
 
             return new WindowWrapping(newPanel, border, rectangleGeometry);
         }
-
     }
 }

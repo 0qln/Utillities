@@ -334,7 +334,7 @@ namespace Utillities.Wpf
         /// <param name="window">The window associated with the WindowHandle.</param>
         public WindowHandle(Window window)
         {
-            this._window = window;
+            _window = window;
             window.WindowStyle = WindowStyle.None;
             window.AllowsTransparency = true;
             window.Background = Brushes.Transparent;
@@ -375,6 +375,23 @@ namespace Utillities.Wpf
             Wrap = WindowWrapper.Wrap(window);
             _parentContainer = Wrap.Panel;
             _parentContainer.Children.Add(FrameworkElement);
+
+            _window.StateChanged += _window_StateChanged;
+        }
+
+        private void _window_StateChanged(object? sender, EventArgs e)
+        {
+            switch (_window.WindowState)
+            {
+                case WindowState.Normal:
+                    Wrap.RoundedCorners = true;
+                    break;
+
+                case WindowState.Minimized:
+                case WindowState.Maximized: 
+                    Wrap.RoundedCorners = false;
+                    break;
+            }
         }
 
         /// <summary>
